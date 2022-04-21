@@ -1,0 +1,52 @@
+sudo apt update && sudo apt upgrade -y
+sudo apt install make curl tar wget clang pkg-config libssl-dev jq build-essential -y
+#Устанавливаем Rust (нужно будет нажать 1)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source ~/.cargo/env
+#Ставим зависимости
+sudo apt update && sudo apt upgrade -y
+sudo apt install make curl tar wget clang pkg-config libssl-dev jq build-essential -y
+#Устанавливаем Rust (нужно будет нажать 1)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source ~/.cargo/env
+#Клонируем репозиторий
+git clone https://github.com/penumbra-zone/penumbra
+cd penumbra
+git checkout 008-philophrosyne
+cargo update
+#Билдим Cli
+cargo build --release --bin pcli
+#Если это ваш первый тестнет в этом проекте - генирируем кошелек, если нет -  восстанавливаем старый
+cargo run --quiet --release --bin pcli wallet generate
+#Восстановление
+cargo run --quiet --release --bin pcli wallet reset
+#Включаем логи
+export RUST_LOG=info
+Запрос токенов происходит на сервере  Penumbra через ветку faucet https://discord.com/invite/MGkGMS9D
+#Проверяем синхронизацию
+cargo run --quiet --release --bin pcli sync
+
+#Смотрим свой адрес
+cargo run --quiet --release --bin pcli addr list
+
+#После запроса в дискорде проверяем свой баланс
+cargo run --quiet --release --bin pcli balance
+
+#Пример
+Total
+ 1gm
+ 1gn
+ 1pizza
+ 100penumbra
+ #Делегация токенов на валидатора
+#Проверяем лист валидаторов (он там 1)
+cargo run --quiet --release --bin pcli stake list-validators
+
+#Высылаем ему 10 токенов
+cargo run --quiet --release --bin pcli stake delegate 10penumbra --to penumbravalid19caff39080amxlupcjutnhcm7vh8rjfevza0hpx33pn7lntf6vyqvuekzh
+
+#Проверяем делегацию
+cargo run --quiet --release --bin pcli stake show
+
+#Вытаскиваем делегацию
+cargo run --quiet --release --bin pcli stake undelegate 1delegation_penumbravalid19caff39080amxlupcjutnhcm7vh8rjfevza0hpx33pn7lntf6vyqvuekzh
